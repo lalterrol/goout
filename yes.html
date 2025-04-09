@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Обратный отсчет</title>
+    <link rel="stylesheet" href="yes_style.css">
+    <style>
+        .timer_container {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+        }
+    </style>
+</head> 
+<body>
+    <div class="container">
+        <div>
+            <h1 class="header_text">Да&rsquo;вааай!</h1>
+        </div>
+        <div class="gif_container">
+            <img src="https://media.tenor.com/YTw87WdiaasAAAAi/tkthao219-capoo.gif">
+        </div>
+
+        <div class="timer_container">
+            Осталось времени: <span id="timer">00:00</span>
+        </div>
+    </div>
+
+    <script>
+        const timerKey = "countdown_deadline";
+
+        function getOrCreateDeadline() {
+            const saved = localStorage.getItem(timerKey);
+            if (saved) {
+                return new Date(saved);
+            }
+
+            const newDeadline = new Date(Date.now() + 777600 * 60 * 1000);
+            localStorage.setItem(timerKey, newDeadline);
+            return newDeadline;
+        }
+
+        const deadline = getOrCreateDeadline();
+
+        function updateTimer() {
+            const now = new Date();
+            const diff = deadline - now;
+
+            if (diff <= 0) {
+                document.getElementById("timer").innerText = "Время вышло!";
+                clearInterval(timerInterval);
+                localStorage.removeItem(timerKey); // удаляем дедлайн после окончания
+                return;
+            }
+
+            const minutes = Math.floor((diff / 1000 / 60) % 60);
+            const seconds = Math.floor((diff / 1000) % 60);
+
+            document.getElementById("timer").innerText =
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        updateTimer();
+        const timerInterval = setInterval(updateTimer, 1000);
+    </script>
+</body> 
+</html>
